@@ -1,5 +1,5 @@
 pipeline{
-    enviroment {
+    environment {
         gitRepo = 'https://github.com/dnyaneshvarsultane/Hello-world.git'
         gitbranch = '${branch}'
          }
