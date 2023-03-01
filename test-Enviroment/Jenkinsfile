@@ -1,0 +1,60 @@
+pipeline{
+    enviroment {
+        serviceName = 'Hello-world'
+        gitRepo = 'https://github.com/dnyaneshvarsultane/Hello-world.git'
+        gitbranch = '${branch}'
+         }
+         agent any
+         stages{
+            stage('Git Clone') {
+                steps {
+                     git credentialsId: gitCredential, url: gitRepo, branch: gitbranch
+                }
+            }
+            /* stage('Sonar scan') {
+                steps{
+                    sh '/opt/sonar-scanner/bin/sonar-scanner'
+                }
+            } */
+         stage('Build Docker') {
+          
+          steps {
+
+            script {
+                dockerImage = docker.build(registry)
+            }
+          }
+         
+         }
+
+         stage('Deploy Image') {
+            steps {
+                script {
+                    docker.withRegistry( registryUrl, registryCredential ) {
+                        //dockerImage.push("$env.BUILD_NUMBER}")
+                        dockerImage.push("latest")
+                    }
+                }
+            }
+
+         }
+         /* stage('analyze') {
+            steps {
+                sh 'echo "${registry}:latest ${WORKSPACE}/Dockerfile" > anchore_images'
+                anchore name: 'anchore_images'
+            }
+         }
+         
+         */
+         
+         stage ('Remove Unused docker image') {
+          steps {
+            //sh"docker rmi $ {registry}:${env.BUILD_NUMBER}"
+            sh"docker rmi $registry:latest"
+
+           }
+       }          
+    }
+
+} 
+        
