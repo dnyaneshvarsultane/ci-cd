@@ -1,6 +1,5 @@
 pipeline{
     enviroment {
-        serviceName = 'Hello-world'
         gitRepo = 'https://github.com/dnyaneshvarsultane/Hello-world.git'
         gitbranch = '${branch}'
          }
